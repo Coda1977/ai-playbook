@@ -82,6 +82,15 @@ Located in `/api/`:
 - Prompts are carefully crafted - preserve tone and structure when modifying
 - Error handling returns user-friendly messages (not technical errors)
 
+### Chat Brevity Constraints (`api/chat.js`)
+Chat system prompts enforce strict brevity to prevent verbose AI responses:
+- **60-word hard limit** on conversational text (before `---IDEAS---` separator)
+- **Banned patterns**: no preamble ("Great question!"), no recap of user input, no filler
+- **"Count them" self-check** at end of each system prompt (recency bias enforcement)
+- **max_tokens: 512** (down from 1024) to physically cap output length
+- Persona-level brevity: AI is positioned as "direct, practical expert" not a verbose peer
+- When modifying chat prompts, preserve these constraints -- verbosity creep is the #1 issue
+
 ## Code Style & Conventions
 
 ### Component Organization
