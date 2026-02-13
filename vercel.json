@@ -1,5 +1,4 @@
 {
-  "projectName": "ai-primitives-playbook",
   "framework": "vite",
   "functions": {
     "api/*.js": { "maxDuration": 30 }
