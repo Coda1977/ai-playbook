@@ -32,18 +32,20 @@ export default function PlaybookView({ state, dispatch }) {
               <p className="orientation-hint">Step 3 of 4: Change Strategy -- Star your priorities. Go deeper on any rule. Make this yours.</p>
             </div>
 
-            {RULES.map((r, i) => (
-              <RuleSection
-                key={r.id}
-                rule={r}
-                actions={state.plan[r.id] || []}
-                dispatch={dispatch}
-                isActive={activeRule?.id === r.id}
-                onGoDeeper={setActiveRule}
-                delay={i * 0.05}
-                isLast={i === RULES.length - 1}
-              />
-            ))}
+            <div className="rule-list">
+              {RULES.map((r, i) => (
+                <RuleSection
+                  key={r.id}
+                  rule={r}
+                  actions={state.plan[r.id] || []}
+                  dispatch={dispatch}
+                  isActive={activeRule?.id === r.id}
+                  onGoDeeper={setActiveRule}
+                  delay={i * 0.05}
+                  isLast={i === RULES.length - 1}
+                />
+              ))}
+            </div>
           </div>
         </div>
 

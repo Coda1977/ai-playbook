@@ -50,18 +50,20 @@ export default function PrimitivesView({ state, dispatch, onContinue }) {
               </p>
             </div>
 
-            {CATEGORIES.map((c, i) => (
-              <CategorySection
-                key={c.id}
-                category={c}
-                ideas={state.primitives[c.id] || []}
-                dispatch={dispatch}
-                isActive={activeCategory?.id === c.id}
-                onGoDeeper={setActiveCategory}
-                delay={i * 0.05}
-                isLast={i === CATEGORIES.length - 1}
-              />
-            ))}
+            <div className="card-stack">
+              {CATEGORIES.map((c, i) => (
+                <CategorySection
+                  key={c.id}
+                  category={c}
+                  ideas={state.primitives[c.id] || []}
+                  dispatch={dispatch}
+                  isActive={activeCategory?.id === c.id}
+                  onGoDeeper={setActiveCategory}
+                  delay={i * 0.05}
+                  isLast={i === CATEGORIES.length - 1}
+                />
+              ))}
+            </div>
 
             {/* Gate */}
             <div className="gate-bar">
