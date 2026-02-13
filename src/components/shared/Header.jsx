@@ -101,24 +101,24 @@ export default function Header({ state, dispatch }) {
             )}
             {phase === "primitives" && (
               <>
-                <button onClick={() => exportPrimitivesDocx(state)} className="btn-ghost">
-                  <Download size={14} /> Export Ideas (.docx)
+                <button onClick={() => exportPrimitivesDocx(state)} className="btn-ghost btn-sm">
+                  <Download size={14} /> Export
                 </button>
-                <button onClick={() => setShowConfirm(true)} className="btn-ghost">
-                  <RotateCcw size={14} /> Start Over
+                <button onClick={() => setShowConfirm(true)} className="btn-ghost btn-sm" title="Start Over">
+                  <RotateCcw size={14} />
                 </button>
               </>
             )}
             {phase === "playbook" && (
               <>
-                <button onClick={() => exportPlaybookDocx(state)} className="btn-ghost">
-                  <Download size={14} /> Export Strategy (.docx)
+                <button onClick={() => exportPlaybookDocx(state)} className="btn-ghost btn-sm">
+                  <Download size={14} /> Export
                 </button>
-                <button onClick={() => dispatch({ type: "SET_PHASE", phase: "commitment" })} className="btn-primary">
-                  Review & Download <ChevronRight size={14} />
+                <button onClick={() => dispatch({ type: "SET_PHASE", phase: "commitment" })} className="btn-primary btn-sm">
+                  Review <ChevronRight size={14} />
                 </button>
-                <button onClick={() => setShowConfirm(true)} className="btn-ghost">
-                  <RotateCcw size={14} /> Start Over
+                <button onClick={() => setShowConfirm(true)} className="btn-ghost btn-sm" title="Start Over">
+                  <RotateCcw size={14} />
                 </button>
               </>
             )}

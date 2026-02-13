@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronRight, Star } from "lucide-react";
 import { CATEGORIES } from "../../config/categories";
 import { MIN_STARS_FOR_PLAYBOOK, C } from "../../config/constants";
@@ -9,7 +9,9 @@ import ChatDrawer from "../shared/ChatDrawer";
 export default function PrimitivesView({ state, dispatch, onContinue }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [counterPulse, setCounterPulse] = useState(false);
+  const [activeCatId, setActiveCatId] = useState(null);
   const prevStarredRef = useRef(0);
+  const scrollRef = useRef(null);
   const chatOpen = activeCategory !== null;
 
   const totalIdeas = CATEGORIES.reduce((sum, c) => sum + (state.primitives[c.id] || []).length, 0);
@@ -25,10 +27,37 @@ export default function PrimitivesView({ state, dispatch, onContinue }) {
     prevStarredRef.current = starredCount;
   }, [starredCount]);
 
+  // IntersectionObserver for sticky category nav
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const sections = container.querySelectorAll("[data-category-id]");
+    if (sections.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveCatId(entry.target.getAttribute("data-category-id"));
+          }
+        }
+      },
+      { root: container, rootMargin: "-100px 0px -60% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [state.primitives]);
+
+  const scrollToCategory = useCallback((catId) => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const el = container.querySelector(`[data-category-id="${catId}"]`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   return (
     <FlashProvider>
       <div className="canvas-layout">
-        <div className="canvas-rules" style={{ flex: chatOpen ? "1 1 0" : "1 1 auto" }}>
+        <div className="canvas-rules" ref={scrollRef}>
           <div className="canvas-inner">
             <div className="canvas-orientation animate-fade-in">
               <div className="orientation-stats">
@@ -50,6 +79,18 @@ export default function PrimitivesView({ state, dispatch, onContinue }) {
               </p>
             </div>
 
+            <div className="category-nav">
+              {CATEGORIES.filter((c) => (state.primitives[c.id] || []).length > 0).map((c) => (
+                <button
+                  key={c.id}
+                  className={`category-nav-item ${activeCatId === c.id ? "active" : ""}`}
+                  onClick={() => scrollToCategory(c.id)}
+                >
+                  {c.title}
+                </button>
+              ))}
+            </div>
+
             <div className="card-stack">
               {CATEGORIES.map((c, i) => (
                 <CategorySection
@@ -64,26 +105,26 @@ export default function PrimitivesView({ state, dispatch, onContinue }) {
                 />
               ))}
             </div>
+          </div>
 
-            {/* Gate */}
-            <div className="gate-bar">
-              <div className={`gate-counter ${counterPulse ? "counter-pulse" : ""}`}>
-                {canContinue ? (
-                  <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred -- ready to build your strategy</span>
-                ) : starredCount === 0 ? (
-                  <span>Star ideas that matter most to you to continue</span>
-                ) : (
-                  <span><strong>{starredCount}</strong> of {MIN_STARS_FOR_PLAYBOOK} required stars</span>
-                )}
-              </div>
-              <button
-                onClick={canContinue ? onContinue : undefined}
-                className={`btn-gate ${canContinue ? "btn-gate-active" : "btn-gate-disabled"}`}
-                disabled={!canContinue}
-              >
-                Continue to Change Strategy <ChevronRight size={16} />
-              </button>
+          {/* Gate -- direct child of canvas-rules for sticky to work */}
+          <div className="gate-bar">
+            <div className={`gate-counter ${counterPulse ? "counter-pulse" : ""}`}>
+              {canContinue ? (
+                <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred -- ready to build your strategy</span>
+              ) : starredCount === 0 ? (
+                <span>Star ideas that matter most to you to continue</span>
+              ) : (
+                <span><strong>{starredCount}</strong> of {MIN_STARS_FOR_PLAYBOOK} starred -- star {MIN_STARS_FOR_PLAYBOOK - starredCount} more to continue</span>
+              )}
             </div>
+            <button
+              onClick={canContinue ? onContinue : undefined}
+              className={`btn-gate ${canContinue ? "btn-gate-active" : "btn-gate-disabled"}`}
+              disabled={!canContinue}
+            >
+              Continue to Change Strategy <ChevronRight size={16} />
+            </button>
           </div>
         </div>
 

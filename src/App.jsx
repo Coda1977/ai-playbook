@@ -6,6 +6,7 @@ import PaperGrain from "./components/shared/PaperGrain";
 import ErrorBanner from "./components/shared/ErrorBanner";
 import Header from "./components/shared/Header";
 import GeneratingIndicator from "./components/shared/GeneratingIndicator";
+import ConfirmModal from "./components/shared/ConfirmModal";
 import IntakeView from "./components/views/IntakeView";
 import PrimitivesView from "./components/views/PrimitivesView";
 import PlaybookView from "./components/views/PlaybookView";
@@ -22,6 +23,21 @@ export default function App() {
   // Playbook generation
   const [playbookReady, setPlaybookReady] = useState(false);
   const [pendingPlan, setPendingPlan] = useState(null);
+
+  // Regeneration confirmation
+  const [showRegenConfirm, setShowRegenConfirm] = useState(false);
+  const [pendingIntake, setPendingIntake] = useState(null);
+
+  const hasExistingPrimitives = CATEGORIES.some((c) => (state.primitives[c.id] || []).length > 0);
+
+  const handleGenerateRequest = (intake) => {
+    if (hasExistingPrimitives) {
+      setPendingIntake(intake);
+      setShowRegenConfirm(true);
+    } else {
+      handleGeneratePrimitives(intake);
+    }
+  };
 
   const handleGeneratePrimitives = async (intake) => {
     setGenErr(null);
@@ -96,7 +112,7 @@ export default function App() {
 
       <main className="app-main">
         {phase === "intake" && (
-          <IntakeView state={state} dispatch={dispatch} onGenerate={handleGeneratePrimitives} />
+          <IntakeView state={state} dispatch={dispatch} onGenerate={handleGenerateRequest} />
         )}
         {phase === "generating-primitives" && (
           <>
@@ -120,6 +136,24 @@ export default function App() {
           <CommitmentView state={state} dispatch={dispatch} />
         )}
       </main>
+
+      <ConfirmModal
+        open={showRegenConfirm}
+        title="Replace existing ideas?"
+        message="This will replace all existing ideas, including starred items. This can't be undone."
+        confirmLabel="Yes, regenerate"
+        onConfirm={() => {
+          setShowRegenConfirm(false);
+          if (pendingIntake) {
+            handleGeneratePrimitives(pendingIntake);
+            setPendingIntake(null);
+          }
+        }}
+        onCancel={() => {
+          setShowRegenConfirm(false);
+          setPendingIntake(null);
+        }}
+      />
     </div>
   );
 }

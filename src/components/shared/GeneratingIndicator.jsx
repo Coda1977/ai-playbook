@@ -81,7 +81,7 @@ export default function GeneratingIndicator({ mode, onReady }) {
                   : `Rule ${s.rule}: ${items[i].name}`;
                 return (
                   <div key={i} className={`gen-step ${done ? "gen-done" : active ? "gen-active" : "gen-future"}`}>
-                    <div className="gen-step-icon">
+                    <div className={`gen-step-icon ${active ? "gen-step-icon-active" : ""}`}>
                       {done ? (
                         <CheckCircle2 size={18} color={C.red} />
                       ) : active ? (
@@ -97,6 +97,10 @@ export default function GeneratingIndicator({ mode, onReady }) {
                   </div>
                 );
               })}
+              <div className="gen-progress-bar">
+                <div className="gen-progress-fill" style={{ width: `${Math.min(Math.round((step / steps.length) * 100), 100)}%` }} />
+              </div>
+              <div className="gen-progress-label">{Math.min(Math.round((step / steps.length) * 100), 100)}%</div>
             </div>
             {stepsFinished && (
               <div className="gen-building animate-fade-in">

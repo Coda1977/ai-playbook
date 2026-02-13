@@ -37,6 +37,7 @@ export default function CategorySection({ category, ideas, dispatch, isActive, o
       className={`use-card ${isFlashing ? "rule-flashing" : ""}`}
       style={{ animationDelay: `${delay}s`, "--cat-color": category.color || C.electricBlue }}
       id={`category-${category.id}`}
+      data-category-id={category.id}
     >
       {/* Black card header */}
       <div className="use-card-header">

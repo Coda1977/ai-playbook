@@ -15,7 +15,7 @@ export default function PlaybookView({ state, dispatch }) {
   return (
     <FlashProvider>
       <div className="canvas-layout">
-        <div className="canvas-rules" style={{ flex: chatOpen ? "1 1 0" : "1 1 auto" }}>
+        <div className="canvas-rules">
           <div className="canvas-inner">
             <div className="canvas-orientation animate-fade-in">
               <div className="orientation-stats">

@@ -77,10 +77,10 @@ export default function ActionCard({ action, ruleId, dispatch, isNew }) {
           ) : (
             <>
               <button onClick={() => setEditing(true)} className="action-inline-btn" aria-label="Edit">
-                <Pencil size={14} />
+                <Pencil size={16} />
               </button>
               <button onClick={handleDelete} className="action-inline-btn action-inline-delete" aria-label="Delete">
-                <Trash2 size={14} />
+                <Trash2 size={16} />
               </button>
             </>
           )}

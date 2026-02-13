@@ -55,47 +55,26 @@ export default function CommitmentView({ state, dispatch }) {
             </article>
           </div>
 
-          {/* 2-column review: Use Cases left, Playbook right -- shows ALL items */}
-          <div className="review-columns animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <article className="panel">
-              <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 18, marginBottom: 16 }}>My AI Use Cases</h3>
-              {allPrimitiveIdeas.length > 0 ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {allPrimitiveIdeas.map((i) => (
-                    <div key={i.id} className="commitment-priority-item">
-                      {i.starred ? (
-                        <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
-                      ) : (
-                        <div className="commitment-bullet"><Check size={12} /></div>
-                      )}
-                      <span>{i.text} <span className="commitment-rule-ref">-- {i.category.title}</span></span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p style={{ fontSize: 14, color: C.darkGray, fontStyle: "italic" }}>No ideas yet</p>
-              )}
-            </article>
-            <article className="panel">
-              <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 18, marginBottom: 16 }}>My Change Playbook</h3>
-              {allActions.length > 0 ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {allActions.map((a) => (
-                    <div key={a.id} className="commitment-priority-item">
-                      {a.starred ? (
-                        <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
-                      ) : (
-                        <div className="commitment-bullet"><Check size={12} /></div>
-                      )}
-                      <span>{a.text} <span className="commitment-rule-ref">-- Rule {a.rule.number}</span></span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p style={{ fontSize: 14, color: C.darkGray, fontStyle: "italic" }}>No actions yet</p>
-              )}
-            </article>
-          </div>
+          {/* Priorities box -- starred items only */}
+          {(starredPrimitives.length > 0 || starredActions.length > 0) && (
+            <div className="commitment-priorities animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <div className="commitment-priorities-label">Your Priorities</div>
+              <div className="commitment-actions">
+                {starredPrimitives.map((i) => (
+                  <div key={i.id} className="commitment-priority-item">
+                    <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
+                    <span>{i.text} <span className="commitment-rule-ref">-- {i.category.title}</span></span>
+                  </div>
+                ))}
+                {starredActions.map((a) => (
+                  <div key={a.id} className="commitment-priority-item">
+                    <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
+                    <span>{a.text} <span className="commitment-rule-ref">-- Rule {a.rule.number}</span></span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* -- Full detail: My AI Use Cases -- */}
           <h2 className="commitment-section-title animate-fade-in" style={{ animationDelay: "0.14s" }}>My AI Use Cases</h2>

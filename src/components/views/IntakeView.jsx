@@ -1,13 +1,13 @@
 import { useState, useRef } from "react";
-import { Sparkles, CheckCircle2, Circle } from "lucide-react";
+import { Sparkles, Check } from "lucide-react";
 import { HELP_OPTIONS } from "../../config/categories";
 import { FLUENCY_OPTIONS } from "../../config/rules";
 import { C } from "../../config/constants";
 
 function TextareaWithGuide({ value, onChange, placeholder, rows = 3, hasError }) {
-  const len = value.trim().length;
-  const hint = len === 0 ? null : len < 30 ? "A bit more detail will help AI personalize your plan." : len < 80 ? "Good start -- the more specific, the better." : "Great detail -- this will help create a strong plan.";
-  const hintColor = len < 30 ? "#b45309" : "#059669";
+  const words = value.trim() ? value.trim().split(/\s+/).length : 0;
+  const hint = words === 0 ? null : words <= 5 ? "Add more detail for better personalization." : words <= 15 ? "Good start -- keep going for best results." : "Great detail -- this will help create a strong plan.";
+  const hintColor = words <= 15 ? "#b45309" : "#059669";
   return (
     <div>
       <textarea value={value} onChange={onChange} placeholder={placeholder} rows={rows} className={`input-textarea ${hasError ? "input-error" : ""}`} />
@@ -27,7 +27,9 @@ function FluencySelector({ value, onChange, type, hasError }) {
           <button key={o.level} onClick={() => onChange(v)} type="button"
             className={`fluency-option ${sel ? "fluency-selected" : ""}`}>
             <div className="fluency-check">
-              {sel ? <CheckCircle2 size={18} color={C.black} /> : <Circle size={18} color={C.lightGray} />}
+              <div className="fluency-radio">
+                <div className="fluency-radio-dot" />
+              </div>
             </div>
             <div>
               <div className="fluency-label">{o.label}</div>
@@ -48,6 +50,7 @@ function HelpPills({ selected, onToggle, hasError }) {
         return (
           <button key={o.id} onClick={() => onToggle(o.id)} type="button"
             className={`pill ${sel ? "on" : ""}`}>
+            {sel && <Check size={14} />}
             {o.label}
           </button>
         );
@@ -69,6 +72,7 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
   const toggleHelp = (id) => setF((p) => ({ ...p, helpWith: p.helpWith.includes(id) ? p.helpWith.filter((h) => h !== id) : [...p.helpWith, id] }));
 
   const ok = f.role && f.helpWith.length > 0 && f.responsibilities && f.managerFluency && f.teamFluency && f.failureRisks && f.successVision;
+  const completedCount = [f.role, f.helpWith.length > 0, f.responsibilities, f.managerFluency, f.teamFluency, f.failureRisks, f.successVision].filter(Boolean).length;
 
   const missing = (field) => attempted && !f[field];
   const missingArray = (field) => attempted && (!f[field] || f[field].length === 0);
@@ -88,6 +92,13 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
     <div className="intake-container" ref={formRef}>
       <div className="intake-split">
         <div className="intake-main">
+          <div className="intake-progress-sticky">
+            <div className="intake-progress-text">{completedCount} of 7 complete</div>
+            <div className="intake-progress-bar">
+              <div className="intake-progress-fill" style={{ width: `${(completedCount / 7) * 100}%` }} />
+            </div>
+          </div>
+
           {/* Hero panel -- dark */}
           <div className="intake-hero animate-fade-in">
             <div className="intake-label" style={{ color: "rgba(255,255,255,0.6)" }}>Personalized AI Playbook</div>
