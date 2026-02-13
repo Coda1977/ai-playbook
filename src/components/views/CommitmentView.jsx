@@ -1,0 +1,155 @@
+import { Star, ArrowLeft, Download, Check } from "lucide-react";
+import { CATEGORIES } from "../../config/categories";
+import { RULES } from "../../config/rules";
+import { C } from "../../config/constants";
+
+export default function CommitmentView({ state, dispatch }) {
+  const { primitives, plan, intake } = state;
+  const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+  // Primitives
+  const allPrimitiveIdeas = CATEGORIES.flatMap((c) => (primitives[c.id] || []).map((i) => ({ ...i, category: c })));
+  const starredPrimitives = allPrimitiveIdeas.filter((i) => i.starred);
+
+  // Playbook
+  const allActions = RULES.flatMap((r) => (plan[r.id] || []).map((a) => ({ ...a, rule: r })));
+  const starredActions = allActions.filter((a) => a.starred);
+
+  const hasAnything = allPrimitiveIdeas.length > 0 || allActions.length > 0;
+
+  return (
+    <div className="commitment-container">
+      <div className="animate-fade-in">
+        <div className="no-print">
+          <p className="commitment-step">Step 4 of 4 -- Review</p>
+        </div>
+        <div className="commitment-header-print">
+          <div className="intake-label">AI Primitives + Change Playbook</div>
+        </div>
+        <h1 className="commitment-title">My AI Journey</h1>
+        <p className="commitment-role">{intake.role} &middot; {date}</p>
+      </div>
+
+      {!hasAnything ? (
+        <div className="commitment-empty animate-fade-in" style={{ animationDelay: "0.08s" }}>
+          <p>No content yet. Go back and add some ideas or actions.</p>
+          <button onClick={() => dispatch({ type: "SET_PHASE", phase: "primitives" })} className="btn-ghost">
+            <ArrowLeft size={14} /> Back to Discovery
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Stats */}
+          <div className="commitment-stats no-print animate-fade-in" style={{ animationDelay: "0.06s" }}>
+            {[
+              { n: allPrimitiveIdeas.length, label: "AI ideas" },
+              { n: allActions.length, label: allActions.length === 1 ? "action" : "actions" },
+              { n: starredPrimitives.length + starredActions.length, label: "priorities" },
+            ].map((s, i) => (
+              <div key={i} className="commitment-stat-card">
+                <div className="commitment-stat-number">{s.n}</div>
+                <div className="commitment-stat-label">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* -- My AI Use Cases -- */}
+          <h2 className="commitment-section-title animate-fade-in" style={{ animationDelay: "0.08s" }}>My AI Use Cases</h2>
+
+          {starredPrimitives.length > 0 && (
+            <div className="commitment-priorities animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <div className="commitment-priorities-label">* Priority Ideas</div>
+              {starredPrimitives.map((i) => (
+                <div key={i.id} className="commitment-priority-item">
+                  <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
+                  <span>{i.text} <span className="commitment-rule-ref">-- {i.category.title}</span></span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {CATEGORIES.map((c, idx) => {
+            const ideas = primitives[c.id] || [];
+            if (ideas.length === 0) return null;
+            return (
+              <div key={c.id} className="commitment-rule animate-fade-in" style={{ animationDelay: `${0.14 + idx * 0.03}s` }}>
+                <div className="commitment-rule-number" style={{ color: c.color || C.accent }}>Category {c.number}</div>
+                <h3 className="commitment-rule-name">{c.title}</h3>
+                <div className="commitment-actions">
+                  {ideas.map((i) => (
+                    <div key={i.id} className="commitment-action">
+                      {i.starred ? (
+                        <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
+                      ) : (
+                        <div className="commitment-bullet"><Check size={12} /></div>
+                      )}
+                      <span>{i.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* -- My Change Playbook -- */}
+          {allActions.length > 0 && (
+            <>
+              <h2 className="commitment-section-title animate-fade-in" style={{ animationDelay: "0.3s" }}>My Change Playbook</h2>
+
+              {starredActions.length > 0 && (
+                <div className="commitment-priorities animate-fade-in" style={{ animationDelay: "0.32s" }}>
+                  <div className="commitment-priorities-label">* Priority Actions</div>
+                  {starredActions.map((a) => (
+                    <div key={a.id} className="commitment-priority-item">
+                      <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
+                      <span>{a.text} <span className="commitment-rule-ref">-- Rule {a.rule.number}</span></span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {RULES.map((r, i) => {
+                const acts = plan[r.id] || [];
+                return (
+                  <div key={r.id} className="commitment-rule animate-fade-in" style={{ animationDelay: `${0.36 + i * 0.04}s` }}>
+                    <div className="commitment-rule-number" style={{ color: r.color || C.accent }}>Rule {r.number}</div>
+                    <h3 className="commitment-rule-name">{r.name}</h3>
+                    {acts.length === 0 ? (
+                      <p className="commitment-no-actions">No actions added</p>
+                    ) : (
+                      <div className="commitment-actions">
+                        {acts.map((a) => (
+                          <div key={a.id} className="commitment-action">
+                            {a.starred ? (
+                              <Star size={16} fill={C.accentGlow} color={C.accentGlow} style={{ flexShrink: 0, marginTop: 3 }} />
+                            ) : (
+                              <div className="commitment-bullet"><Check size={12} /></div>
+                            )}
+                            <span>{a.text}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          )}
+
+          <div className="commitment-footer-print">
+            <p>Generated {date} &middot; AI Primitives + Change Playbook</p>
+          </div>
+
+          <div className="commitment-buttons no-print animate-fade-in" style={{ animationDelay: "0.5s" }}>
+            <button onClick={() => dispatch({ type: "SET_PHASE", phase: "playbook" })} className="btn-ghost btn-lg">
+              <ArrowLeft size={15} /> Back to Edit
+            </button>
+            <button onClick={() => window.print()} className="btn-primary btn-lg">
+              <Download size={15} /> Download as PDF
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

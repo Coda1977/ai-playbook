@@ -1,0 +1,193 @@
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { uid } from "../config/constants";
+import { loadState, saveState } from "../utils/storage";
+export { FlashProvider, useFlash } from "./FlashContext";
+
+const INIT = {
+  phase: "intake",
+  intake: {
+    role: "",
+    helpWith: [],
+    responsibilities: "",
+    managerFluency: "",
+    teamFluency: "",
+    failureRisks: "",
+    successVision: "",
+  },
+  primitives: { content: [], automation: [], research: [], data: [], coding: [], ideation: [] },
+  primitivesChat: {},
+  plan: { destination: [], safe: [], script: [], small: [], visible: [] },
+  playbookChat: {},
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "HYDRATE":
+      return { ...INIT, ...action.state };
+    case "SET_PHASE":
+      return { ...state, phase: action.phase };
+    case "SET_INTAKE":
+      return { ...state, intake: action.intake };
+
+    // --- Primitives ---
+    case "SET_PRIMITIVES": {
+      const primitives = {};
+      for (const [k, v] of Object.entries(action.primitives)) {
+        primitives[k] = v.map((t) => ({ id: uid(), text: t, starred: false, source: "ai" }));
+      }
+      return { ...state, primitives, phase: "primitives" };
+    }
+    case "ADD_PRIMITIVE":
+      return {
+        ...state,
+        primitives: {
+          ...state.primitives,
+          [action.categoryId]: [
+            ...(state.primitives[action.categoryId] || []),
+            { id: uid(), text: action.text, starred: false, source: action.source || "manual" },
+          ],
+        },
+      };
+    case "UPDATE_PRIMITIVE":
+      return {
+        ...state,
+        primitives: {
+          ...state.primitives,
+          [action.categoryId]: (state.primitives[action.categoryId] || []).map((x) =>
+            x.id === action.ideaId ? { ...x, text: action.text } : x
+          ),
+        },
+      };
+    case "DELETE_PRIMITIVE":
+      return {
+        ...state,
+        primitives: {
+          ...state.primitives,
+          [action.categoryId]: (state.primitives[action.categoryId] || []).filter((x) => x.id !== action.ideaId),
+        },
+      };
+    case "TOGGLE_PRIMITIVE_STAR":
+      return {
+        ...state,
+        primitives: {
+          ...state.primitives,
+          [action.categoryId]: (state.primitives[action.categoryId] || []).map((x) =>
+            x.id === action.ideaId ? { ...x, starred: !x.starred } : x
+          ),
+        },
+      };
+    case "ADD_PRIMITIVES_CHAT_MSG":
+      return {
+        ...state,
+        primitivesChat: {
+          ...state.primitivesChat,
+          [action.categoryId]: [...(state.primitivesChat[action.categoryId] || []), action.message],
+        },
+      };
+    case "MARK_PRIMITIVE_IDEA_ADDED": {
+      const msgs = [...(state.primitivesChat[action.categoryId] || [])];
+      const m = { ...msgs[action.msgIdx] };
+      const ideas = [...(m.ideas || [])];
+      ideas[action.ideaIdx] = { ...ideas[action.ideaIdx], added: true };
+      m.ideas = ideas;
+      msgs[action.msgIdx] = m;
+      return { ...state, primitivesChat: { ...state.primitivesChat, [action.categoryId]: msgs } };
+    }
+
+    // --- Playbook ---
+    case "SET_PLAN": {
+      const plan = {};
+      for (const [k, v] of Object.entries(action.plan)) {
+        plan[k] = v.map((t) => ({ id: uid(), text: t, starred: false, source: "ai" }));
+      }
+      return { ...state, plan, phase: "playbook" };
+    }
+    case "ADD_ACTION":
+      return {
+        ...state,
+        plan: {
+          ...state.plan,
+          [action.ruleId]: [
+            ...(state.plan[action.ruleId] || []),
+            { id: uid(), text: action.text, starred: false, source: action.source || "manual" },
+          ],
+        },
+      };
+    case "UPDATE_ACTION":
+      return {
+        ...state,
+        plan: {
+          ...state.plan,
+          [action.ruleId]: (state.plan[action.ruleId] || []).map((x) =>
+            x.id === action.actionId ? { ...x, text: action.text } : x
+          ),
+        },
+      };
+    case "DELETE_ACTION":
+      return {
+        ...state,
+        plan: {
+          ...state.plan,
+          [action.ruleId]: (state.plan[action.ruleId] || []).filter((x) => x.id !== action.actionId),
+        },
+      };
+    case "TOGGLE_STAR":
+      return {
+        ...state,
+        plan: {
+          ...state.plan,
+          [action.ruleId]: (state.plan[action.ruleId] || []).map((x) =>
+            x.id === action.actionId ? { ...x, starred: !x.starred } : x
+          ),
+        },
+      };
+    case "ADD_CHAT_MSG":
+      return {
+        ...state,
+        playbookChat: {
+          ...state.playbookChat,
+          [action.ruleId]: [...(state.playbookChat[action.ruleId] || []), action.message],
+        },
+      };
+    case "MARK_IDEA_ADDED": {
+      const msgs = [...(state.playbookChat[action.ruleId] || [])];
+      const m = { ...msgs[action.msgIdx] };
+      const ideas = [...(m.ideas || [])];
+      ideas[action.ideaIdx] = { ...ideas[action.ideaIdx], added: true };
+      m.ideas = ideas;
+      msgs[action.msgIdx] = m;
+      return { ...state, playbookChat: { ...state.playbookChat, [action.ruleId]: msgs } };
+    }
+
+    case "RESET":
+      return { ...INIT };
+    default:
+      return state;
+  }
+}
+
+const AppContext = createContext(null);
+
+export function AppProvider({ children }) {
+  const [state, dispatch] = useReducer(reducer, INIT, () => {
+    const saved = loadState();
+    return saved && saved.phase ? { ...INIT, ...saved } : INIT;
+  });
+
+  useEffect(() => {
+    saveState(state);
+  }, [state]);
+
+  return (
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+export function useApp() {
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error("useApp must be used inside AppProvider");
+  return ctx;
+}
