@@ -91,8 +91,8 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
     <div className="intake-container" ref={formRef}>
       <div className="animate-fade-in">
         <div className="intake-label">Workshop Tool</div>
-        <h1 className="intake-title">Map Your AI Potential & Build Your Change Playbook</h1>
-        <p className="intake-subtitle">Answer seven questions about your role and team. AI will discover use cases tailored to you, then build a personalized change management plan grounded in behavioral science.</p>
+        <h1 className="intake-title">Map Your AI Potential & Build Your Change Strategy</h1>
+        <p className="intake-subtitle">Answer seven questions about your role and team. AI will discover use cases tailored to you, then build a personalized change strategy grounded in behavioral science.</p>
         <p className="intake-step">Step 1 of 4</p>
       </div>
 

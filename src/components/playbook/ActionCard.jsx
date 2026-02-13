@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Star, Pencil, Trash2 } from "lucide-react";
 import { C } from "../../config/constants";
+import { useToast } from "../../context/ToastContext";
 
 export default function ActionCard({ action, ruleId, dispatch, isNew }) {
+  const { showToast } = useToast();
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(action.text);
   const [removing, setRemoving] = useState(false);
@@ -32,6 +34,9 @@ export default function ActionCard({ action, ruleId, dispatch, isNew }) {
   const handleStar = () => {
     setBlooming(true);
     dispatch({ type: "TOGGLE_STAR", ruleId, actionId: action.id });
+    if (!action.starred) {
+      showToast("Added to your priorities");
+    }
     setTimeout(() => setBlooming(false), 500);
   };
 

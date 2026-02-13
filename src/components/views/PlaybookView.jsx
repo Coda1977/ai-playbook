@@ -29,7 +29,7 @@ export default function PlaybookView({ state, dispatch }) {
                   </>
                 )}
               </div>
-              <p className="orientation-hint">Step 3 of 4 -- Star your priorities. Go deeper on any rule. Make this yours.</p>
+              <p className="orientation-hint">Step 3 of 4: Change Strategy -- Star your priorities. Go deeper on any rule. Make this yours.</p>
             </div>
 
             {RULES.map((r, i) => (

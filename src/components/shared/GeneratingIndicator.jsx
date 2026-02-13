@@ -8,9 +8,9 @@ export default function GeneratingIndicator({ mode, onReady }) {
   const isPrimitives = mode === "primitives";
   const steps = isPrimitives ? PRIMITIVES_GEN_STEPS : PLAYBOOK_GEN_STEPS;
   const items = isPrimitives ? CATEGORIES : RULES;
-  const title = isPrimitives ? "Discovering AI use cases" : "Writing your playbook";
+  const title = isPrimitives ? "Discovering AI use cases" : "Writing your change strategy";
   const subtitle = isPrimitives ? "Brainstorming ideas for your role..." : "Personalizing your actions...";
-  const readyTitle = isPrimitives ? "Your AI canvas is ready" : "Your playbook is ready";
+  const readyTitle = isPrimitives ? "Your AI use cases are ready" : "Your change strategy is ready";
 
   const [step, setStep] = useState(0);
   const [stepsFinished, setStepsFinished] = useState(false);
@@ -66,6 +66,12 @@ export default function GeneratingIndicator({ mode, onReady }) {
             {stepsFinished ? subtitle : `Step ${isPrimitives ? "2" : "3"} of 4 -- Generating...`}
           </p>
           <div className="generating-steps">
+            {isPrimitives && (
+              <p className="gen-phase-label">Step 2 of 4: AI Use Cases</p>
+            )}
+            {!isPrimitives && (
+              <p className="gen-phase-label">Step 3 of 4: Change Strategy</p>
+            )}
             {steps.map((s, i) => {
               const done = i < step;
               const active = i === step;
@@ -94,7 +100,7 @@ export default function GeneratingIndicator({ mode, onReady }) {
           {stepsFinished && (
             <div className="gen-building animate-fade-in">
               <Loader2 size={16} color={C.accent} className="spinning" />
-              <span>{isPrimitives ? "Building your AI canvas..." : "Building your personalized plan..."}</span>
+              <span>{isPrimitives ? "Building your AI use cases..." : "Building your personalized strategy..."}</span>
             </div>
           )}
         </>

@@ -1,12 +1,12 @@
 # AI Playbook
 
-Combined AI Primitives Discovery + Change Management Playbook
+Combined AI Use Cases Discovery + Change Strategy Builder
 
 ## Features
 
 - **Phase 1**: Combined intake form (7 fields)
-- **Phase 2**: AI Primitives discovery across 6 categories
-- **Phase 3**: Change Playbook with 5 behavioral science rules
+- **Phase 2**: AI Use Cases discovery across 6 categories
+- **Phase 3**: Change Strategy with 5 behavioral science rules
 - **Phase 4**: Review & export (PDF/Word)
 
 ## Tech Stack

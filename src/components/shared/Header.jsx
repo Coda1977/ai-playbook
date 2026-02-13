@@ -87,7 +87,7 @@ export default function Header({ state, dispatch }) {
       <header className="header no-print">
         <div className="header-inner">
           <div className="header-left">
-            <span className="header-title">AI Primitives + Playbook</span>
+            <span className="header-title">AI Playbook</span>
             {showRole && (
               <>
                 <span className="header-divider">|</span>
@@ -112,7 +112,7 @@ export default function Header({ state, dispatch }) {
             {phase === "playbook" && (
               <>
                 <button onClick={() => exportPlaybookDocx(state)} className="btn-ghost">
-                  <Download size={14} /> Export Playbook (.docx)
+                  <Download size={14} /> Export Strategy (.docx)
                 </button>
                 <button onClick={() => dispatch({ type: "SET_PHASE", phase: "commitment" })} className="btn-primary">
                   Review & Download <ChevronRight size={14} />
@@ -124,7 +124,7 @@ export default function Header({ state, dispatch }) {
             )}
             {phase === "commitment" && (
               <button onClick={() => dispatch({ type: "SET_PHASE", phase: "playbook" })} className="btn-ghost">
-                <ArrowLeft size={14} /> Back to Edit
+                <ArrowLeft size={14} /> Back to Edit Strategy
               </button>
             )}
           </div>

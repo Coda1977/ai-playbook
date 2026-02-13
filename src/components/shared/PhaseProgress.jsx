@@ -3,8 +3,8 @@ import { C } from "../../config/constants";
 
 const PHASES = [
   { id: "intake", label: "Intake" },
-  { id: "primitives", label: "Discovery" },
-  { id: "playbook", label: "Playbook" },
+  { id: "primitives", label: "AI Use Cases" },
+  { id: "playbook", label: "Change Strategy" },
   { id: "commitment", label: "Review" },
 ];
 

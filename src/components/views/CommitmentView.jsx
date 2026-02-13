@@ -24,10 +24,10 @@ export default function CommitmentView({ state, dispatch }) {
           <p className="commitment-step">Step 4 of 4 -- Review</p>
         </div>
         <div className="commitment-header-print">
-          <div className="intake-label">AI Primitives + Change Playbook</div>
+          <div className="intake-label">AI Playbook</div>
         </div>
         <h1 className="commitment-title">My AI Journey</h1>
-        <p className="commitment-role">{intake.role} &middot; {date}</p>
+        <p className="commitment-role" title={intake.role}>{intake.role} &middot; {date}</p>
       </div>
 
       {!hasAnything ? (
@@ -44,9 +44,9 @@ export default function CommitmentView({ state, dispatch }) {
             {[
               { n: allPrimitiveIdeas.length, label: "AI ideas" },
               { n: allActions.length, label: allActions.length === 1 ? "action" : "actions" },
-              { n: starredPrimitives.length + starredActions.length, label: "priorities" },
+              { n: starredPrimitives.length + starredActions.length, label: "starred priorities", tooltip: "Ideas and actions you marked as most important" },
             ].map((s, i) => (
-              <div key={i} className="commitment-stat-card">
+              <div key={i} className="commitment-stat-card" title={s.tooltip || ""}>
                 <div className="commitment-stat-number">{s.n}</div>
                 <div className="commitment-stat-label">{s.label}</div>
               </div>
@@ -137,12 +137,12 @@ export default function CommitmentView({ state, dispatch }) {
           )}
 
           <div className="commitment-footer-print">
-            <p>Generated {date} &middot; AI Primitives + Change Playbook</p>
+            <p>Generated {date} &middot; AI Playbook</p>
           </div>
 
           <div className="commitment-buttons no-print animate-fade-in" style={{ animationDelay: "0.5s" }}>
             <button onClick={() => dispatch({ type: "SET_PHASE", phase: "playbook" })} className="btn-ghost btn-lg">
-              <ArrowLeft size={15} /> Back to Edit
+              <ArrowLeft size={15} /> Back to Edit Strategy
             </button>
             <button onClick={() => window.print()} className="btn-primary btn-lg">
               <Download size={15} /> Download as PDF
