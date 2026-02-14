@@ -71,10 +71,12 @@ export default function ChatDrawer({ type, item, state, dispatch, onClose }) {
   useEffect(() => {
     if (messages.length === 0 && !sentInit.current) {
       sentInit.current = true;
-      const initMsg = isPrimitive
-        ? `I'm exploring ${item.title} ideas for my role. Here are my current ideas for this category. Help me brainstorm more specific use cases, and suggest ideas I haven't thought of.`
-        : `I'm working on Rule ${item.number}: ${item.name} - "${item.principle}". Here are my current actions for this rule. Help me make them more specific to my situation, and challenge me on anything that feels too generic.`;
-      doSend(initMsg, true);
+      const addMsgType = isPrimitive ? "ADD_PRIMITIVES_CHAT_MSG" : "ADD_CHAT_MSG";
+      const idKey = isPrimitive ? "categoryId" : "ruleId";
+      const opener = isPrimitive
+        ? `Let's explore ${item.title.toLowerCase()} for your role. What would be most useful to dig into?`
+        : `Let's explore ${item.name}. What would be most useful to dig into?`;
+      dispatch({ type: addMsgType, [idKey]: itemId, message: { role: "assistant", content: opener } });
     }
   }, [itemId]); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -63,6 +63,7 @@ QUALITY CHECK \u2014 BEFORE RETURNING, VERIFY EACH ACTION:
 2. Does it start with a concrete verb? (If not, rewrite it.)
 3. Is it under 25 words? (If not, tighten it \u2014 cut every unnecessary word.)
 4. Would this person know exactly what to do Monday morning? (If not, make it more specific.)
+5. If the action involves sharing a personal story, does it leave the content to the manager? (Say "share your AI experiment with the team" NOT "explain how automating X saved Y hours." Never invent experiences, metrics, or outcomes for the manager.)
 
 RULES:
 ${rulesBlock}

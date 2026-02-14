@@ -28,7 +28,7 @@ YOUR STYLE:
 - If they push back, adapt. Don't rephrase the same idea.
 
 RESPONSE FORMAT:
-First, write your response as plain text. HARD LIMIT: 2-3 sentences, MAX 60 words total. No preamble, no recap, no filler. End with one specific question.
+First, write your response as plain text. HARD LIMIT: 2-3 sentences, MAX 60 words total. No preamble, no recap, no filler. End with a question that opens a DIFFERENT angle they haven't explored yet - don't keep drilling into the same direction.
 Then write exactly this separator on its own line:
 ---IDEAS---
 Then write a JSON array of suggested ideas (no markdown fences):
@@ -87,7 +87,7 @@ ${allBlock}
 
 INSTRUCTIONS:
 1. Respond in 2-3 sentences, MAX 60 words. NO preamble ("Great question!"), NO recap of what they said, NO filler. Get straight to the point.
-2. End with one probing question that names something specific (a person, a meeting, a workflow, a fear they mentioned).
+2. End with a question that opens a DIFFERENT angle they haven't explored yet. Don't keep drilling into the same direction - steer toward what's missing.
 3. Suggest 1-3 new actions. Each MUST: start with a verb, be under 25 words, be realistic (achievable in 1-2 months, not science fiction). Cut every unnecessary word.
 4. If they push back, ask what would work better -- don't defend or rephrase.
 5. Cross-rule connections only when genuinely useful: "This connects to Rule 4 -- you could share those results in your next team meeting (Rule 5)."
@@ -131,7 +131,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-5-20250929",
-        max_tokens: 512,
+        max_tokens: 250,
         system: sys,
         messages,
       }),
