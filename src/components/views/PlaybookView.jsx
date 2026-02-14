@@ -52,7 +52,7 @@ export default function PlaybookView({ state, dispatch, onStartOver }) {
           {/* Gate -- sticky bottom bar */}
           <div className="gate-bar">
             <div className="gate-left">
-              <button onClick={onStartOver} className="btn-reset-link">
+              <button onClick={onStartOver} className="btn-ghost btn-sm">
                 <RotateCcw size={12} /> Start over
               </button>
               <div className="gate-counter">

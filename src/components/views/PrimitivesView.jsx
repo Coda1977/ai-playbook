@@ -71,7 +71,7 @@ export default function PrimitivesView({ state, dispatch, onContinue, onStartOve
           {/* Gate - direct child of canvas-rules for sticky to work */}
           <div className="gate-bar">
             <div className="gate-left">
-              <button onClick={onStartOver} className="btn-reset-link">
+              <button onClick={onStartOver} className="btn-ghost btn-sm">
                 <RotateCcw size={12} /> Start over
               </button>
               <div className={`gate-counter ${counterPulse ? "counter-pulse" : ""}`}>

@@ -354,7 +354,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
    TOAST
    ======================================== */
 .toast-container {
-  position: fixed; bottom: 24px; right: 24px; z-index: 200;
+  position: fixed; bottom: 90px; right: 24px; z-index: 200;
   pointer-events: none;
 }
 .toast {
@@ -883,9 +883,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
 .btn-gate-disabled:hover { background: var(--color-black); }
 .btn-gate-active { animation: glowPulse 2s ease-in-out infinite; background: var(--color-red); }
 .btn-gate-active:hover { background: var(--color-red-hover); }
-.gate-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.gate-left .btn-reset-link { font-size: 11px; opacity: 0.5; }
-.gate-left .btn-reset-link:hover { opacity: 1; }
+.gate-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .gate-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .gate-export-btn { border-color: rgba(0,0,0,0.15) !important; }
 
