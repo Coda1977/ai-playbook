@@ -19,7 +19,7 @@ React 19 + Vite 7 + Tailwind CSS 4 + Vercel Serverless Functions. Claude Sonnet 
 
 **Phase names**: "AI Use Cases" (not Discovery/Primitives) and "Change Strategy" (not Playbook/Change Management).
 
-**Chat brevity** (`api/chat.js`): 60-word hard limit, no preamble/recap/filler, max_tokens 200. Verbosity creep is the #1 issue -- preserve constraints when modifying prompts. Adding more prompt text makes verbosity WORSE (model mirrors input energy). Use max_tokens as the hard ceiling, not prompt instructions.
+**Chat brevity** (`api/chat.js`): 60-word hard limit, no preamble/recap/filler, max_tokens 250 (tested: 200 cuts off ideas JSON, 512 allows verbose prose). Verbosity creep is the #1 issue -- preserve constraints when modifying prompts. Adding more prompt text makes verbosity WORSE (model mirrors input energy). Use max_tokens as the hard ceiling, not prompt instructions.
 
 **Behavioral science**: The 5 rules (Start at End, Make It Safe, Script Steps, Start Small, Make Progress Visible) are research-grounded. Don't dilute the prompts in `playbook-generate.js`.
 
