@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, RotateCcw } from "lucide-react";
 import { RULES } from "../../config/rules";
 import { FlashProvider } from "../../context/AppContext";
 import RuleSection from "../playbook/RuleSection";
 import ChatDrawer from "../shared/ChatDrawer";
 
-export default function PlaybookView({ state, dispatch }) {
+export default function PlaybookView({ state, dispatch, onStartOver }) {
   const [activeRule, setActiveRule] = useState(null);
   const chatOpen = activeRule !== null;
 
@@ -51,8 +51,13 @@ export default function PlaybookView({ state, dispatch }) {
 
           {/* Gate -- sticky bottom bar */}
           <div className="gate-bar">
-            <div className="gate-counter">
-              <span><strong>{totalActions}</strong> actions across <strong>{rulesWithActions}</strong> rules{starred > 0 && <> &middot; <strong>{starred}</strong> starred</>}</span>
+            <div className="gate-left">
+              <button onClick={onStartOver} className="btn-reset-link">
+                <RotateCcw size={12} /> Start over
+              </button>
+              <div className="gate-counter">
+                <span><strong>{totalActions}</strong> actions across <strong>{rulesWithActions}</strong> rules{starred > 0 && <> &middot; <strong>{starred}</strong> starred</>}</span>
+              </div>
             </div>
             <button
               onClick={() => dispatch({ type: "SET_PHASE", phase: "commitment" })}

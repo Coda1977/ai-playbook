@@ -1,14 +1,10 @@
-import { useState } from "react";
 import { Star, ArrowLeft, Download, Check, RotateCcw } from "lucide-react";
 import { CATEGORIES } from "../../config/categories";
 import { RULES } from "../../config/rules";
 import { C } from "../../config/constants";
 import { exportPrimitivesDocx, exportPlaybookDocx } from "../../utils/export";
-import { clearState } from "../../utils/storage";
-import ConfirmModal from "../shared/ConfirmModal";
 
-export default function CommitmentView({ state, dispatch }) {
-  const [showConfirm, setShowConfirm] = useState(false);
+export default function CommitmentView({ state, dispatch, onStartOver }) {
   const { primitives, plan, intake } = state;
   const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
@@ -157,25 +153,12 @@ export default function CommitmentView({ state, dispatch }) {
           </div>
 
           <div className="commitment-reset no-print animate-fade-in" style={{ animationDelay: "0.55s" }}>
-            <button onClick={() => setShowConfirm(true)} className="btn-reset-link">
+            <button onClick={onStartOver} className="btn-reset-link">
               <RotateCcw size={13} /> Start over with new intake
             </button>
           </div>
         </>
       )}
-
-      <ConfirmModal
-        open={showConfirm}
-        title="Start fresh?"
-        message="This will clear everything - all ideas, actions, stars, and conversations. You can't undo this."
-        confirmLabel="Yes, start fresh"
-        onConfirm={() => {
-          setShowConfirm(false);
-          clearState();
-          dispatch({ type: "RESET" });
-        }}
-        onCancel={() => setShowConfirm(false)}
-      />
     </div>
   );
 }

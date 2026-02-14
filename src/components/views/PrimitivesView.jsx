@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { ChevronRight, Star, Download } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronRight, Star, Download, RotateCcw } from "lucide-react";
 import { CATEGORIES } from "../../config/categories";
 import { MIN_STARS_FOR_PLAYBOOK, C } from "../../config/constants";
 import { FlashProvider } from "../../context/AppContext";
@@ -7,10 +7,9 @@ import { exportPrimitivesDocx } from "../../utils/export";
 import CategorySection from "../primitives/CategorySection";
 import ChatDrawer from "../shared/ChatDrawer";
 
-export default function PrimitivesView({ state, dispatch, onContinue }) {
+export default function PrimitivesView({ state, dispatch, onContinue, onStartOver }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [counterPulse, setCounterPulse] = useState(false);
-  const [activeCatId, setActiveCatId] = useState(null);
   const prevStarredRef = useRef(0);
   const scrollRef = useRef(null);
   const chatOpen = activeCategory !== null;
@@ -27,33 +26,6 @@ export default function PrimitivesView({ state, dispatch, onContinue }) {
     }
     prevStarredRef.current = starredCount;
   }, [starredCount]);
-
-  // IntersectionObserver for sticky category nav
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const sections = container.querySelectorAll("[data-category-id]");
-    if (sections.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveCatId(entry.target.getAttribute("data-category-id"));
-          }
-        }
-      },
-      { root: container, rootMargin: "-100px 0px -60% 0px", threshold: 0 }
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, [state.primitives]);
-
-  const scrollToCategory = useCallback((catId) => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const el = container.querySelector(`[data-category-id="${catId}"]`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
 
   return (
     <FlashProvider>
@@ -80,48 +52,39 @@ export default function PrimitivesView({ state, dispatch, onContinue }) {
               </p>
             </div>
 
-            <div className="primitives-content">
-              <nav className="category-nav">
-                {CATEGORIES.filter((c) => (state.primitives[c.id] || []).length > 0).map((c) => (
-                  <button
-                    key={c.id}
-                    className={`category-nav-item ${activeCatId === c.id ? "active" : ""}`}
-                    onClick={() => scrollToCategory(c.id)}
-                  >
-                    {c.title}
-                  </button>
-                ))}
-              </nav>
-
-              <div className="card-stack">
-                {CATEGORIES.map((c, i) => (
-                  <CategorySection
-                    key={c.id}
-                    category={c}
-                    ideas={state.primitives[c.id] || []}
-                    dispatch={dispatch}
-                    isActive={activeCategory?.id === c.id}
-                    onGoDeeper={setActiveCategory}
-                    delay={i * 0.05}
-                    isLast={i === CATEGORIES.length - 1}
-                  />
-                ))}
-              </div>
+            <div className="card-stack">
+              {CATEGORIES.map((c, i) => (
+                <CategorySection
+                  key={c.id}
+                  category={c}
+                  ideas={state.primitives[c.id] || []}
+                  dispatch={dispatch}
+                  isActive={activeCategory?.id === c.id}
+                  onGoDeeper={setActiveCategory}
+                  delay={i * 0.05}
+                  isLast={i === CATEGORIES.length - 1}
+                />
+              ))}
             </div>
           </div>
 
           {/* Gate - direct child of canvas-rules for sticky to work */}
           <div className="gate-bar">
-            <div className={`gate-counter ${counterPulse ? "counter-pulse" : ""}`}>
-              {starredCount === 0 ? (
-                <span>Star the ideas that matter to you</span>
-              ) : starredCount < MIN_STARS_FOR_PLAYBOOK ? (
-                <span>Keep going - star at least <strong>{MIN_STARS_FOR_PLAYBOOK}</strong> to continue</span>
-              ) : starredCount <= 5 ? (
-                <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred so far - keep going or continue when ready</span>
-              ) : (
-                <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred - great coverage!</span>
-              )}
+            <div className="gate-left">
+              <button onClick={onStartOver} className="btn-reset-link">
+                <RotateCcw size={12} /> Start over
+              </button>
+              <div className={`gate-counter ${counterPulse ? "counter-pulse" : ""}`}>
+                {starredCount === 0 ? (
+                  <span>Star the ideas that matter to you</span>
+                ) : starredCount < MIN_STARS_FOR_PLAYBOOK ? (
+                  <span>Keep going - star at least <strong>{MIN_STARS_FOR_PLAYBOOK}</strong> to continue</span>
+                ) : starredCount <= 5 ? (
+                  <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred so far - keep going or continue when ready</span>
+                ) : (
+                  <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred - great coverage!</span>
+                )}
+              </div>
             </div>
             <div className="gate-actions">
               <button onClick={() => exportPrimitivesDocx(state)} className="btn-ghost btn-sm gate-export-btn">

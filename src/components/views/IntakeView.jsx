@@ -72,6 +72,7 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
   const toggleHelp = (id) => setF((p) => ({ ...p, helpWith: p.helpWith.includes(id) ? p.helpWith.filter((h) => h !== id) : [...p.helpWith, id] }));
 
   const ok = f.role && f.helpWith.length > 0 && f.responsibilities && f.managerFluency && f.teamFluency && f.failureRisks && f.successVision;
+  const doneCount = [f.role, f.helpWith.length > 0, f.responsibilities, f.managerFluency, f.teamFluency, f.failureRisks, f.successVision].filter(Boolean).length;
 
   const RAIL_FIELDS = [
     { key: "role", label: "Role" },
@@ -100,6 +101,7 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
 
   return (
     <div className="intake-container" ref={formRef}>
+      <div className="intake-body">
       <nav className="intake-rail" aria-label="Form progress">
         {RAIL_FIELDS.map((field, i) => (
           <div key={field.key} className="rail-segment">
@@ -174,14 +176,6 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
               <TextareaWithGuide value={f.successVision} onChange={(e) => set("successVision", e.target.value)} placeholder="e.g., Every CSM uses AI to prep for client calls, and we've cut QBR prep time in half" hasError={missing("successVision")} />
             </article>
 
-            {/* Submit */}
-            <button
-              onClick={handleSubmit}
-              className={`btn-generate ${attempted && !ok ? "btn-shake" : ""}`}
-              style={{ animationDelay: "0.34s" }}
-            >
-              <Sparkles size={16} /> Discover My AI Use Cases
-            </button>
           </div>
         </div>
 
@@ -201,6 +195,24 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
             </article>
           </div>
         </aside>
+      </div>
+      </div>
+
+      {/* Sticky gate bar */}
+      <div className="gate-bar">
+        <div className="gate-counter">
+          {ok ? (
+            <span><Check size={14} style={{ verticalAlign: "text-bottom", color: "#059669" }} /> All fields complete</span>
+          ) : (
+            <span>{doneCount} of 7 fields complete</span>
+          )}
+        </div>
+        <button
+          onClick={handleSubmit}
+          className={`btn-gate ${ok ? "btn-gate-active" : "btn-gate-disabled"} ${attempted && !ok ? "btn-shake" : ""}`}
+        >
+          <Sparkles size={16} /> Discover My AI Use Cases
+        </button>
       </div>
     </div>
   );

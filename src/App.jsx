@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
 import { useApp } from "./context/AppContext";
 import { generatePrimitives, generatePlaybook } from "./utils/api";
+import { clearState } from "./utils/storage";
 import { CATEGORIES } from "./config/categories";
+import { RULES } from "./config/rules";
 import PaperGrain from "./components/shared/PaperGrain";
 import ErrorBanner from "./components/shared/ErrorBanner";
 import Header from "./components/shared/Header";
@@ -27,6 +29,12 @@ export default function App() {
   // Regeneration confirmation
   const [showRegenConfirm, setShowRegenConfirm] = useState(false);
   const [pendingIntake, setPendingIntake] = useState(null);
+
+  // Start over confirmation
+  const [showStartOver, setShowStartOver] = useState(false);
+
+  // Playbook re-generation confirmation (when going back then forward)
+  const [showPlaybookRegen, setShowPlaybookRegen] = useState(false);
 
   const hasExistingPrimitives = CATEGORIES.some((c) => (state.primitives[c.id] || []).length > 0);
 
@@ -72,7 +80,17 @@ export default function App() {
     return starred;
   };
 
-  const handleContinueToPlaybook = async () => {
+  const hasExistingPlan = RULES.some((r) => (state.plan[r.id] || []).length > 0);
+
+  const handleContinueToPlaybook = () => {
+    if (hasExistingPlan) {
+      setShowPlaybookRegen(true);
+    } else {
+      doGeneratePlaybook();
+    }
+  };
+
+  const doGeneratePlaybook = async () => {
     setGenErr(null);
     setPlaybookReady(false);
     setPendingPlan(null);
@@ -116,16 +134,16 @@ export default function App() {
           <GeneratingIndicator mode="primitives" onReady={primitivesReady ? handlePrimitivesReady : null} />
         )}
         {phase === "primitives" && (
-          <PrimitivesView state={state} dispatch={dispatch} onContinue={handleContinueToPlaybook} />
+          <PrimitivesView state={state} dispatch={dispatch} onContinue={handleContinueToPlaybook} onStartOver={() => setShowStartOver(true)} />
         )}
         {phase === "generating-playbook" && (
           <GeneratingIndicator mode="playbook" onReady={playbookReady ? handlePlaybookReady : null} />
         )}
         {phase === "playbook" && (
-          <PlaybookView state={state} dispatch={dispatch} />
+          <PlaybookView state={state} dispatch={dispatch} onStartOver={() => setShowStartOver(true)} />
         )}
         {phase === "commitment" && (
-          <CommitmentView state={state} dispatch={dispatch} />
+          <CommitmentView state={state} dispatch={dispatch} onStartOver={() => setShowStartOver(true)} />
         )}
       </main>
 
@@ -144,6 +162,35 @@ export default function App() {
         onCancel={() => {
           setShowRegenConfirm(false);
           setPendingIntake(null);
+        }}
+      />
+
+      <ConfirmModal
+        open={showStartOver}
+        title="Start fresh?"
+        message="This will clear everything - all ideas, actions, stars, and conversations. You can't undo this."
+        confirmLabel="Yes, start fresh"
+        onConfirm={() => {
+          setShowStartOver(false);
+          clearState();
+          dispatch({ type: "RESET" });
+        }}
+        onCancel={() => setShowStartOver(false)}
+      />
+
+      <ConfirmModal
+        open={showPlaybookRegen}
+        title="You already have a change strategy"
+        message="Would you like to regenerate it based on your current starred ideas, or keep your existing strategy and edits?"
+        confirmLabel="Regenerate"
+        cancelLabel="Keep current"
+        onConfirm={() => {
+          setShowPlaybookRegen(false);
+          doGeneratePlaybook();
+        }}
+        onCancel={() => {
+          setShowPlaybookRegen(false);
+          dispatch({ type: "SET_PHASE", phase: "playbook" });
         }}
       />
     </div>
