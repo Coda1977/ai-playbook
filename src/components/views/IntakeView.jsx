@@ -201,17 +201,16 @@ export default function IntakeView({ state, dispatch, onGenerate }) {
       {/* Sticky gate bar */}
       <div className="gate-bar">
         <div className="gate-counter">
-          {ok ? (
-            <span><Check size={14} style={{ verticalAlign: "text-bottom", color: "#059669" }} /> All fields complete</span>
-          ) : (
-            <span>{doneCount} of 7 fields complete</span>
-          )}
+          <strong>{doneCount}</strong> of 7 fields
+        </div>
+        <div style={{ fontSize: 13, color: "var(--color-dark-gray)", textAlign: "center" }}>
+          {ok ? "Ready to discover your use cases" : "Complete all fields to continue"}
         </div>
         <button
           onClick={handleSubmit}
           className={`btn-gate ${ok ? "btn-gate-active" : "btn-gate-disabled"} ${attempted && !ok ? "btn-shake" : ""}`}
         >
-          <Sparkles size={16} /> Discover My AI Use Cases
+          <Sparkles size={16} /> Discover Use Cases
         </button>
       </div>
     </div>

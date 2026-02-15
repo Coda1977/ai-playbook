@@ -71,31 +71,31 @@ export default function PrimitivesView({ state, dispatch, onContinue, onStartOve
           {/* Gate - direct child of canvas-rules for sticky to work */}
           <div className="gate-bar">
             <div className="gate-left">
-              <button onClick={onStartOver} className="btn-ghost btn-sm">
-                <RotateCcw size={12} /> Start over
-              </button>
               <div className={`gate-counter ${counterPulse ? "counter-pulse" : ""}`}>
-                {starredCount === 0 ? (
-                  <span>Star the ideas that matter to you</span>
-                ) : starredCount < MIN_STARS_FOR_PLAYBOOK ? (
-                  <span>Keep going - star at least <strong>{MIN_STARS_FOR_PLAYBOOK}</strong> to continue</span>
-                ) : starredCount <= 5 ? (
-                  <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred so far - keep going or continue when ready</span>
-                ) : (
-                  <span><Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} /> <strong>{starredCount}</strong> starred - great coverage!</span>
-                )}
+                <Star size={14} fill={C.accentGlow} color={C.accentGlow} style={{ verticalAlign: "text-bottom" }} />
+                {" "}<strong>{starredCount}</strong> of {totalIdeas}
               </div>
             </div>
+            <div style={{ fontSize: 13, color: "var(--color-dark-gray)", textAlign: "center" }}>
+              {starredCount === 0
+                ? "Star the ideas that matter to you"
+                : starredCount < MIN_STARS_FOR_PLAYBOOK
+                  ? `Star at least ${MIN_STARS_FOR_PLAYBOOK} to continue`
+                  : "Ready when you are"}
+            </div>
             <div className="gate-actions">
-              <button onClick={() => exportPrimitivesDocx(state)} className="btn-ghost btn-sm gate-export-btn">
+              <button onClick={() => exportPrimitivesDocx(state)} className="btn-ghost btn-sm">
                 <Download size={14} /> Export
+              </button>
+              <button onClick={onStartOver} className="btn-ghost btn-sm">
+                <RotateCcw size={12} /> Start over
               </button>
               <button
                 onClick={canContinue ? onContinue : undefined}
                 className={`btn-gate ${canContinue ? "btn-gate-active" : "btn-gate-disabled"}`}
                 disabled={!canContinue}
               >
-                Continue to Change Strategy <ChevronRight size={16} />
+                Continue to Strategy <ChevronRight size={16} />
               </button>
             </div>
           </div>

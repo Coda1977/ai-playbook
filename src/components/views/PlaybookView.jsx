@@ -52,19 +52,24 @@ export default function PlaybookView({ state, dispatch, onStartOver }) {
           {/* Gate -- sticky bottom bar */}
           <div className="gate-bar">
             <div className="gate-left">
+              <div className="gate-counter">
+                <strong>{totalActions}</strong> actions, <strong>{rulesWithActions}</strong> rules{starred > 0 && <>, <strong>{starred}</strong> starred</>}
+              </div>
+            </div>
+            <div style={{ fontSize: 13, color: "var(--color-dark-gray)", textAlign: "center" }}>
+              Star your priorities, then continue
+            </div>
+            <div className="gate-actions">
               <button onClick={onStartOver} className="btn-ghost btn-sm">
                 <RotateCcw size={12} /> Start over
               </button>
-              <div className="gate-counter">
-                <span><strong>{totalActions}</strong> actions across <strong>{rulesWithActions}</strong> rules{starred > 0 && <> &middot; <strong>{starred}</strong> starred</>}</span>
-              </div>
+              <button
+                onClick={() => dispatch({ type: "SET_PHASE", phase: "commitment" })}
+                className="btn-gate btn-gate-active"
+              >
+                Continue to Review <ChevronRight size={16} />
+              </button>
             </div>
-            <button
-              onClick={() => dispatch({ type: "SET_PHASE", phase: "commitment" })}
-              className="btn-gate btn-gate-active"
-            >
-              Continue to Review <ChevronRight size={16} />
-            </button>
           </div>
         </div>
 
