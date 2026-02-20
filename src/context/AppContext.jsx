@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+//* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { uid } from "../config/constants";
 import { loadState, saveState } from "../utils/storage";

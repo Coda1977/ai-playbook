@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(npm run lint)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(gh pr list:*)",
+      "Bash(git merge:*)",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "mcp__plugin_playwright_playwright__browser_type",
+      "mcp__plugin_playwright_playwright__browser_wait_for",
+      "mcp__plugin_playwright_playwright__browser_press_key",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "Bash(git branch:*)"
     ]
   }
 }
